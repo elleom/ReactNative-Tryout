@@ -17,7 +17,12 @@ export default function App() {
 	const addGoalHandler = () => {
 
 		//Syntax: func( [... currentArray, itemToAdd ])
-		setCourseGoal([...courseGoals, enteredGoal]); // spread array
+		//#IMPORTTAN: this synthax does not guarantee 100% result
+		// E.G: setCourseGoal([...courseGoals, enteredGoal]); // spread array
+		
+		//#best use:
+		// func( array => [...array, itemToAdd])
+		setCourseGoal(courseGoals => [...courseGoals, enteredGoal]); // spread array
 
 	}
 
@@ -33,6 +38,11 @@ export default function App() {
 				/>
 				<Button title='ADD' onPress={addGoalHandler} />
 			</View>
+			<View>
+			</View>
+				
+				{courseGoals.map((goal) => <Text>{goal}</Text>)}
+
 		</View>
 	);
 }
