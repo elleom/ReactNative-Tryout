@@ -1,28 +1,13 @@
 import { useState } from "react";
 import React from "react";
-import {
-	StyleSheet,
-	Text,
-	View,
-	Button,
-	TextInput,
-	ScrollView,
-	FlatList,
-} from "react-native";
+import { StyleSheet, View, Button, TextInput, FlatList } from "react-native";
 import GoalItem from "./components/GoalItem";
+import GoalInput from "./components/GoalInput";
 
 export default function App() {
-	/*
-	Syntax = conts + [ array, funtion] = useState( OBJECT => string, array, etc )
-	*/
-	const [enteredGoal, setEnteredGoal] = useState(""); //text is so far null so state('')
 	const [courseGoals, setCourseGoal] = useState([]); // [] stands for empty array
 
-	const goalInputHandler = (enteredtext) => {
-		setEnteredGoal(enteredtext);
-	};
-
-	const addGoalHandler = () => {
+	const addGoalHandler = (goalTitle) => {
 		//Syntax: func( [... currentArray, itemToAdd ])
 		//#IMPORTAN: this synthax does not guarantee 100% result
 		// E.G: setCourseGoal([...courseGoals, enteredGoal]); // spread array
@@ -31,28 +16,37 @@ export default function App() {
 		// func( array => [...array, itemToAdd])
 		setCourseGoal((courseGoals) => [
 			...courseGoals,
-			{ key: Math.random.toString(), value: enteredGoal },
+			{ id: getRandomId(10000, 100000).toString(), value: goalTitle },
 		]); // spread array
 	};
 
+	const getRandomId = (min, max) => {
+		return Math.random() * (max - min) + min;
+	}
+
+	const onDeleteHandler = goalId => {
+		setCourseGoal(courseGoals => {
+			//forar each goal in array return the one that is not goalID
+			//note the func inse the filter params
+			return courseGoals.filter((goal) => goal.id !== goalId);
+		}); 
+	};
+
 	return (
+		//addGoalHandler is defined and referenced via GoalInput component
 		<View style={styles.screen}>
-			<View style={styles.inputContainer}>
-				<TextInput
-					placeholder='course goal'
-					style={styles.input}
-					onChangeText={goalInputHandler}
-					value={enteredGoal}
-				/>
-				<Button title='ADD' onPress={addGoalHandler} />
-			</View>
+			<GoalInput onAddGoal={addGoalHandler} />
 
 			<FlatList
-				keyExtractor={(item, index) => item.key}
-				// by default it takes a look at the item and check for a 'key' item
+				keyExtractor={(item, index) => item.id}
 				data={courseGoals}
-				// closes flatview thereafter (flatlist self closing!)
-				renderItem={(itemData) => <GoalItem  title={itemData.item.value}/>} //Goal item is a component 
+				renderItem={(itemData) => (
+					<GoalItem
+						id={itemData.item.id}
+						onDelete={onDeleteHandler}
+						title={itemData.item.value}
+					/>
+				)}
 			/>
 		</View>
 	);
@@ -61,15 +55,5 @@ export default function App() {
 const styles = StyleSheet.create({
 	screen: {
 		padding: 50,
-	},
-	inputContainer: {
-		flexDirection: "row",
-		justifyContent: "space-between",
-		alignItems: "center",
-	},
-	input: {
-		width: "80%",
-		borderColor: "black",
-		borderBottomWidth: 1,
 	},
 });
