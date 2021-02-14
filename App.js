@@ -1,6 +1,15 @@
 import { useState } from "react";
 import React from "react";
-import { StyleSheet, Text, View, Button, TextInput, ScrollView, FlatList } from "react-native";
+import {
+	StyleSheet,
+	Text,
+	View,
+	Button,
+	TextInput,
+	ScrollView,
+	FlatList,
+} from "react-native";
+import GoalItem from "./components/GoalItem";
 
 export default function App() {
 	/*
@@ -20,10 +29,13 @@ export default function App() {
 
 		//#best use:
 		// func( array => [...array, itemToAdd])
-		setCourseGoal((courseGoals) => [...courseGoals, {key: Math.random.toString(), value: enteredGoal}]); // spread array
+		setCourseGoal((courseGoals) => [
+			...courseGoals,
+			{ key: Math.random.toString(), value: enteredGoal },
+		]); // spread array
 	};
 
-	return ( 
+	return (
 		<View style={styles.screen}>
 			<View style={styles.inputContainer}>
 				<TextInput
@@ -32,17 +44,16 @@ export default function App() {
 					onChangeText={goalInputHandler}
 					value={enteredGoal}
 				/>
-				<Button title='ADD' onPress={addGoalHandler} /> 
-			</View> 
-			
-			<FlatList keyExtractor={(item, index) => item.key}
-			// by default it takes a look at the item and check for a 'key' item
-			 data={courseGoals} renderItem={itemData => ( 
-				<View style={styles.goalItem}>
-					<Text>{itemData.item.value /*value comes from addGoalHanlder() */ }</Text>
-				
-				</View>)} // closes flatview thereafter (self-view self closing!)
-			/> 
+				<Button title='ADD' onPress={addGoalHandler} />
+			</View>
+
+			<FlatList
+				keyExtractor={(item, index) => item.key}
+				// by default it takes a look at the item and check for a 'key' item
+				data={courseGoals}
+				// closes flatview thereafter (flatlist self closing!)
+				renderItem={(itemData) => <GoalItem  title={itemData.item.value}/>} //Goal item is a component 
+			/>
 		</View>
 	);
 }
@@ -60,12 +71,5 @@ const styles = StyleSheet.create({
 		width: "80%",
 		borderColor: "black",
 		borderBottomWidth: 1,
-	},
-	goalItem: {
-		padding: 10,
-		marginVertical: 10,
-		backgroundColor: "#ccc",
-		borderColor: "black",
-		borderWidth: 1,
 	},
 });
