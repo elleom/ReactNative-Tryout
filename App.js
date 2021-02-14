@@ -1,6 +1,6 @@
 import { useState } from "react";
 import React from "react";
-import { StyleSheet, Text, View, Button, TextInput, ScrollView } from "react-native";
+import { StyleSheet, Text, View, Button, TextInput, ScrollView, FlatList } from "react-native";
 
 export default function App() {
 	/*
@@ -15,12 +15,12 @@ export default function App() {
 
 	const addGoalHandler = () => {
 		//Syntax: func( [... currentArray, itemToAdd ])
-		//#IMPORTTAN: this synthax does not guarantee 100% result
+		//#IMPORTAN: this synthax does not guarantee 100% result
 		// E.G: setCourseGoal([...courseGoals, enteredGoal]); // spread array
 
 		//#best use:
 		// func( array => [...array, itemToAdd])
-		setCourseGoal((courseGoals) => [...courseGoals, enteredGoal]); // spread array
+		setCourseGoal((courseGoals) => [...courseGoals, {key: Math.random.toString(), value: enteredGoal}]); // spread array
 	};
 
 	return ( 
@@ -33,15 +33,16 @@ export default function App() {
 					value={enteredGoal}
 				/>
 				<Button title='ADD' onPress={addGoalHandler} /> 
-			</View>
-			<ScrollView>
-
-			{courseGoals.map((goal) => (
+			</View> 
+			
+			<FlatList keyExtractor={(item, index) => item.key}
+			// by default it takes a look at the item and check for a 'key' item
+			 data={courseGoals} renderItem={itemData => ( 
 				<View style={styles.goalItem}>
-					<Text key={Math.random}>{goal}</Text>
-				</View>
-			))} 
-			</ScrollView>
+					<Text>{itemData.item.value /*value comes from addGoalHanlder() */ }</Text>
+				
+				</View>)} // closes flatview thereafter (self-view self closing!)
+			/> 
 		</View>
 	);
 }
