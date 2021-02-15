@@ -6,6 +6,7 @@ import GoalInput from "./components/GoalInput";
 
 export default function App() {
 	const [courseGoals, setCourseGoal] = useState([]); // [] stands for empty array
+	const [isAddMode, setAddMode] = useState(false);
 
 	const addGoalHandler = (goalTitle) => {
 		//Syntax: func( [... currentArray, itemToAdd ])
@@ -18,7 +19,12 @@ export default function App() {
 			...courseGoals,
 			{ id: getRandomId(10000, 100000).toString(), value: goalTitle },
 		]); // spread array
+		setAddMode(false);
 	};
+
+	const onCloseModalHandler = () => {
+		setAddMode(false);
+	}
 
 	const getRandomId = (min, max) => {
 		return Math.random() * (max - min) + min;
@@ -32,10 +38,13 @@ export default function App() {
 		}); 
 	};
 
+
+
 	return (
 		//addGoalHandler is defined and referenced via GoalInput component
 		<View style={styles.screen}>
-			<GoalInput onAddGoal={addGoalHandler} />
+			<Button  title="Add Goal" onPress={() => setAddMode(true)}/>
+			<GoalInput visible={isAddMode} onAddGoal={addGoalHandler} onCancel={onCloseModalHandler} />
 
 			<FlatList
 				keyExtractor={(item, index) => item.id}
